@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>kekaiPY</title>
+    <style>
+        body {
+            margin: 0;
+            background: #0a0a0a;
+            color: #fff;
+            font-family: "Segoe UI", Roboto, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Фоновые глоу */
+        .glow {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.4;
+            animation: float 10s infinite alternate ease-in-out;
+            z-index: -1; /* Глоу строго на фоне */
+        }
+
+        .glow:nth-child(1) { width: 300px; height: 300px; background: #ff0077; top: 10%; left: 10%; animation-delay: 0s; }
+        .glow:nth-child(2) { width: 400px; height: 400px; background: #00d4ff; top: 50%; left: 60%; animation-delay: 3s; }
+        .glow:nth-child(3) { width: 250px; height: 250px; background: #7dff00; top: 70%; left: 20%; animation-delay: 6s; }
+
+        @keyframes float {
+            0% { transform: scale(0.8) translateY(0); opacity: 0.3; }
+            50% { transform: scale(1.2) translateY(-30px); opacity: 0.6; }
+            100% { transform: scale(1) translateY(0); opacity: 0.3; }
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #222;
+            z-index: 1; /* поверх глоу */
+        }
+
+        header img { width: 50px; cursor: pointer; }
+
+        .lang-menu { position: relative; }
+        .lang-btn { background: #222; border: none; color: #fff; padding: 8px 14px; border-radius: 6px; cursor: pointer; }
+        .lang-btn:hover { background: #333; }
+        .lang-dropdown {
+            position: absolute; right: 0; top: 120%;
+            background: #111; border: 1px solid #333; border-radius: 6px; min-width: 140px;
+            overflow: hidden; transform: scaleY(0); transform-origin: top; transition: transform 0.3s ease; z-index: 100;
+        }
+        .lang-menu.open .lang-dropdown { transform: scaleY(1); }
+        .lang-dropdown button { background: none; border: none; color: #fff; padding: 12px; width: 100%; text-align: left; cursor: pointer; }
+        .lang-dropdown button:hover { background: #222; }
+
+        .hero {
+            position: relative; z-index: 1;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            padding: 80px 20px 40px; animation: fadeUp 1s ease forwards;
+        }
+        .hero h1 {
+            font-size: 4rem; margin-bottom: 20px; letter-spacing: 8px; text-transform: uppercase;
+            background: linear-gradient(90deg, #fff, #bbb);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: glowText 3s infinite alternate;
+        }
+        .hero p { color: #ccc; font-size: 1.3rem; margin-bottom: 30px; animation: fadeUp 1s ease forwards; animation-delay: 0.3s; opacity: 0; }
+
+        @keyframes glowText { from { text-shadow: 0 0 10px rgba(255,255,255,0.2); } to { text-shadow: 0 0 25px rgba(255,255,255,0.6); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Карточки проектов */
+        .projects {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1; /* поверх глоу */
+        }
+
+        .project-card {
+            background: #111;
+            border-radius: 15px;
+            box-shadow: 0 0 20px 4px #000; /* темное свечение */
+            padding: 20px;
+            width: 280px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .project-card h2 {
+            text-transform: uppercase;
+            font-size: 1.5rem;
+            margin: 0;
+            color: #fff; /* белое название */
+        }
+
+        .project-card p {
+            color: #bbb;
+            font-size: 1rem;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .project-card a {
+            padding: 10px 20px;
+            background: #fff; /* белая кнопка */
+            color: #000; /* черная надпись */
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .project-card a:hover {
+            background: #e0e0e0;
+            transform: scale(1.05);
+        }
+
+        footer { display: none; } /* убрали футер */
+    </style>
+</head>
+
+<body>
+    <!-- Фоновые глоу -->
+    <div class="glow"></div>
+    <div class="glow"></div>
+    <div class="glow"></div>
+
+    <!-- Навбар -->
+    <header>
+        <img src="logo.png" alt="Logo">
+        <div class="lang-menu" id="langMenu">
+            <button class="lang-btn" onclick="toggleLangMenu()">🌐 Language</button>
+            <div class="lang-dropdown" id="langDropdown">
+                <button onclick="setLang('en')">🇬🇧 English</button>
+                <button onclick="setLang('ru')">🇷🇺 Русский</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1 id="title">kekaiPY</h1>
+        <p id="tagline">Clean. Fast. Minimal.</p>
+    </section>
+
+    <!-- Карточки проектов -->
+    <section class="projects">
+        <!-- ClearPC -->
+        <div class="project-card">
+            <h2>ClearPC</h2>
+            <p>Программа для быстрого удаления временных файлов на вашем ПК. Безопасно, быстро и удобно.</p>
+            <a href="projects/clearPC.exe" download>Скачать</a>
+        </div>
+
+        <!-- Прыгающий Мачик -->
+        <div class="project-card">
+            <h2>Прыгающий Мячик</h2>
+            <p>Игра, где Мач прыгает и пытается выбраться из круга. Весело и динамично!</p>
+            <a href="projects/ball.exe" download>Скачать</a>
+        </div>
+
+        <!-- Google Browser -->
+        <div class="project-card">
+            <h2>Googlekek</h2>
+            <p>Мини-браузер для Windows, который позволяет открывать сайты и искать информацию.</p>
+            <a href="projects/googlekek.exe" download>Скачать</a>
+        </div>
+		
+		       <!--crasher-->
+        <div class="project-card">
+            <h2>crasher(создаётся)</h2>
+            <p>программа для ддоса сайтов.</p>
+            <a href="" ></a>
+        </div>
+    </section>
+	
+	        <!-- spamer -->
+        <div class="project-card">
+            <h2>spamer</h2>
+            <p>программа которая спамит в чате вашим текстом.</p>
+            <a href="projects/spamer.exe" download>Скачать</a>
+        </div>
+
+    <script>
+        const translations = {
+            en: { title: "kekaiPY", tagline: "this site of my projects." },
+            ru: { title: "kekaiPY", tagline: "это сайт моих проектов." }
+        };
+
+        function setLang(lang) {
+            document.getElementById("title").textContent = translations[lang].title;
+            document.getElementById("tagline").textContent = translations[lang].tagline;
+            toggleLangMenu(false);
+        }
+
+        function toggleLangMenu(forceClose) {
+            const menu = document.getElementById("langMenu");
+            if (forceClose === false) menu.classList.remove("open");
+            else menu.classList.toggle("open");
+        }
+
+        document.addEventListener("click", (e) => {
+            const menu = document.getElementById("langMenu");
+            if (!menu.contains(e.target)) menu.classList.remove("open");
+        });
+
+        setLang("ru");
+    </script>
+</body>
+</html>
